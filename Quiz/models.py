@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class User(AbstractUser):
@@ -79,6 +81,18 @@ class Question(models.Model):
             section = testing.section
             section.status = True
             section.save()
+
+
+@receiver(post_save, sender=Question, dispatch_uid="update_section_status")
+def update_section_status(sender, instance, created, **kwargs):
+    if created:
+        current_user = instance.user
+        if current_user.is_authenticated:
+            testing = instance.test
+            if testing.total_correct_answer >= 10:
+                section = testing.section
+                section.status = True
+                section.save()
 
 
 class Review(models.Model):
