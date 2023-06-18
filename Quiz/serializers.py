@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from Quiz.models import Review, Question, Testing, Section, Lesson
+from Quiz.models import Review, Question, Testing, Section, Lesson, Result
 
 User = get_user_model()
 
@@ -48,3 +48,9 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ['id', 'name', 'duration', 'picture', 'photo_material', 'video', 'document']
+
+
+class ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = ['id', 'user', 'section', 'section_name', 'status', 'total_question', 'total_correct_answer']

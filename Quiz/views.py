@@ -1,13 +1,13 @@
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 
-from .models import Review, Testing, Question, Section, Lesson
+from .models import Review, Testing, Question, Section, Lesson, Result
 from .serializers import UserSerializer, ReviewSerializer, TestingSerializer, QuestionSerializer, SectionSerializer, \
-    LessonSerializer
+    LessonSerializer, ResultSerializer
 
 User = get_user_model()
 
@@ -98,3 +98,12 @@ class PerformanceView(APIView):
             })
 
         return Response(data)
+
+
+class ResultViewSet(viewsets.ModelViewSet):
+    queryset = Result.objects.all()
+    serializer_class = ResultSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

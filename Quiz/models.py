@@ -7,7 +7,6 @@ from django.dispatch import receiver
 class User(AbstractUser):
     is_teacher = models.BooleanField(default=False)
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
-    sections = models.ManyToManyField('Section', related_name='users', blank=True)
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -82,6 +81,27 @@ class Question(models.Model):
             section.status = True
             section.save()
 
+        current_user = User.objects.first()
+        if current_user:
+            section = testing.section
+            result, created = Result.objects.get_or_create(
+                user=current_user,
+                section_name=section.name,
+                defaults={
+                    'status': section.status,
+                    'total_question': testing.total_question,
+                    'total_correct_answer': testing.total_correct_answer,
+                    'section_id': section.id,
+                }
+            )
+
+            if not created:
+                result.status = section.status
+                result.total_question = testing.total_question
+                result.total_correct_answer = testing.total_correct_answer
+                result.section_id = section.id
+                result.save()
+
 
 @receiver(post_save, sender=Question, dispatch_uid="update_section_status")
 def update_section_status(sender, instance, created, **kwargs):
@@ -100,3 +120,15 @@ class Review(models.Model):
 
     def __str__(self):
         return self.review_text
+
+
+class Result(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    section = models.ForeignKey('Section', on_delete=models.CASCADE, default=None)
+    section_name = models.CharField(max_length=255)
+    status = models.BooleanField(default=False)
+    total_question = models.IntegerField(default=0)
+    total_correct_answer = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Результат: {self.user.username} - {self.section_name}"
