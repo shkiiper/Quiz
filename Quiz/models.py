@@ -54,6 +54,7 @@ class Testing(models.Model):
 
 
 class Question(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     question_text = models.CharField(max_length=200)
     choice1 = models.CharField(max_length=200, default='вариант')
     choice2 = models.CharField(max_length=200, default='вариант')
