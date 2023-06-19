@@ -53,6 +53,15 @@ class SectionSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'picture', 'test', 'material', 'status']
 
 
+class SectionReadOnlySerializer(serializers.ModelSerializer):
+    material = LessonSerializer(read_only=True)
+    test = TestingSerializer(read_only=True)
+
+    class Meta:
+        model = Section
+        fields = ['id', 'name', 'description', 'picture', 'test', 'material', 'status']
+
+
 class ResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result

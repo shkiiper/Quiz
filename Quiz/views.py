@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from .models import Review, Testing, Question, Section, Lesson, Result
 from .serializers import UserSerializer, ReviewSerializer, TestingSerializer, QuestionSerializer, SectionSerializer, \
-    LessonSerializer, ResultSerializer
+    LessonSerializer, ResultSerializer, SectionReadOnlySerializer
 
 User = get_user_model()
 
@@ -83,9 +83,14 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
-    serializer_class = SectionSerializer
     permission_classes = [AllowAny]
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return SectionSerializer
+        elif self.request.method == 'GET':
+            return SectionReadOnlySerializer
+        return SectionSerializer
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -93,7 +98,8 @@ class LessonViewSet(viewsets.ModelViewSet):
     serializer_class = LessonSerializer
     permission_classes = [AllowAny]
 
-#этот класс был демо версией Result
+
+# этот класс был демо версией Result
 class PerformanceView(APIView):
     permission_classes = [IsAuthenticated]
 
