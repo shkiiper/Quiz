@@ -45,8 +45,8 @@ class LessonSerializer(serializers.ModelSerializer):
 
 
 class SectionSerializer(serializers.ModelSerializer):
-    material = LessonSerializer(read_only=True)
-    test = TestingSerializer(read_only=True)
+    material = LessonSerializer
+    test = TestingSerializer
 
     class Meta:
         model = Section
