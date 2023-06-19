@@ -87,6 +87,7 @@ class SectionViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
 
 
+
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
