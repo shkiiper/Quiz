@@ -7,3 +7,4 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/performance/', PerformanceView.as_view(), name='performance'),
 ]
+#fdfd
